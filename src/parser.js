@@ -60,7 +60,7 @@ class Parser {
     return properties;
   }
 
-  getProperty(reader: BufferReaderType): Object {
+  getProperty(reader: BufferReaderType): (Object | null) {
       const keyString = nextString(reader);
       if(keyString === 'None') {
         return null;
