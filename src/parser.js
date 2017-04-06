@@ -21,7 +21,41 @@ class Parser {
   }
 
   parseHeader(buffer: Buffer): ReplayHeaderType {
-    return { };
+    function readString(buffer: Buffer, strOffset: number) {
+      const strLen = buffer.readUInt32LE(strOffset);
+      const str = buffer.toString('utf-8', strOffset+4, strOffset+4 + strLen - 1);
+      return { value: str, length: strLen + 4 };
+    }
+
+    const header = {};
+
+    const headerSize = buffer.readUInt32LE(0);
+    const headerRaw = buffer.slice(16, 16 + (headerSize - 8) * 8);
+
+    let offset = readString(headerRaw, 0).length;
+
+    let iter = 0;
+    while(true) {
+      const keyString = readString(headerRaw, offset);
+      offset += keyString.length;
+      const keyType = readString(headerRaw, offset);
+      offset += keyType.length + 8; // skip property_value_size
+
+      let keyValue;
+      switch(keyType.value) {
+        case 'IntProperty':
+          keyValue = headerRaw.readUIntLE(offset);
+          offset += 8;
+          break;
+      }
+
+      header[keyString.value] = keyValue;
+      iter++;
+      if(iter > 0) break;
+    }
+
+
+    return header;
   }
 }
 
