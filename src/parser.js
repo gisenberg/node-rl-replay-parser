@@ -1,26 +1,33 @@
 // @flow
 
+import BufferReader from 'buffer-reader';
+
 type ReplayHeaderType = {
 }
 
 type ReplayType = {
   CRC: string;
   Version: string;
-  Header: ReplayHeaderType
+  Header?: ReplayHeaderType
 }
 
-function readString(buffer: Buffer, strOffset: number) {
-  const strLen = buffer.readUInt32LE(strOffset);
-  const str = buffer.toString('utf-8', strOffset+4, strOffset+4 + strLen - 1);
-  return { value: str, length: strLen + 4 };
+function readString(reader: BufferReader, strOffset: number) {
+  const strLen = reader.nextUInt32LE();
+  const str = reader.nextString(strLen);
+  return str;
 }
 
 class Parser {
   parse(buffer: Buffer): ReplayType {
+    const reader = new BufferReader(buffer);
+    const headerLength = reader.nextUInt32LE();
+    const crc = reader.nextUInt32BE().toString(16);
+    const majorVersion = reader.nextUInt32LE();
+    const minorVersion = reader.nextUInt32LE();
     const replay = {
-      CRC: buffer.readUInt32BE(4).toString(16),
-      Version: `${buffer.readUInt32LE(8)}.${buffer.readUInt32LE(12)}`,
-      Header: this.parseHeader(buffer),
+      CRC: crc,
+      Version: `${majorVersion}.${minorVersion}`,
+      // Header: this.parseHeader(reader),
     }
 
     return replay;
