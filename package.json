@@ -1,7 +1,7 @@
 {
   "name": "rl-replay-parser",
   "version": "1.0.0",
-  "main": "./src/parser.js",
+  "main": "./lib/parser.js",
   "scripts": {
     "build": "babel -d lib src --ignore *.test.js",
     "test": "mocha --compilers js:babel-core/register ./src/*.test.js",
