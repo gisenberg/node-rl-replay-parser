@@ -1,5 +1,5 @@
 require('mocha');
-require('chai');
+import { expect } from 'chai';
 
 const fs = require('fs');
 const path = require('path');
@@ -11,13 +11,10 @@ describe('parser', () => {
     it('should parse the header', () => {
       const parser = new Parser();
       const replaySnapshot = fs.readFileSync(path.join(__dirname, './snapshots/1.replay'));
-      const replay = parser.parse(replaySnapshot);
+      const replayHeader = parser.parseHeader(replaySnapshot);
 
-      expect(replay.header.part1Length).to.be(1);
-      expect(replay.header.part1crc).to.be(1);
-      expect(replay.header.versionMajor).to.be(1);
-      expect(replay.header.versionMinor).to.be(31);
-      expect(replay.header.unknown5).to.be(1);
+      expect(replayHeader.CRC).to.eql('59f93396');
+      expect(replayHeader.Version).to.eql('868.17');
     });
   });
 });
