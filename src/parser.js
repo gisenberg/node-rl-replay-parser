@@ -11,10 +11,18 @@ type ReplayType = {
   Header?: ReplayHeaderType
 }
 
-function readString(reader: BufferReader, strOffset: number) {
+type BufferReaderType = {
+  seek: (position: number) => void;
+  nextString: () => string;
+  nextUInt16LE: () => number;
+  nextUInt32LE: () => number;
+  nextUInt32BE: () => number;
+}
+
+function nextString(reader: BufferReaderType): string {
   const strLen = reader.nextUInt32LE();
   const str = reader.nextString(strLen);
-  return str;
+  return str.substr(0, strLen-1);
 }
 
 class Parser {
@@ -27,67 +35,65 @@ class Parser {
     const replay = {
       CRC: crc,
       Version: `${majorVersion}.${minorVersion}`,
-      // Header: this.parseHeader(reader),
+      Header: this.parseHeader(buffer),
     }
 
     return replay;
   }
 
-  getProperties(buffer: Buffer, startOffset: number = 0) {
+  getProperties(buffer: BufferReaderType) {
     const properties = {};
-    let offset = startOffset;
 
     let iter = 0;
     while(true) {
-      const property = this.getProperty(buffer, offset);
+      const property = this.getProperty(buffer);
       properties[property.key] = property.value;
-      offset = property.offset;
+
       iter++;
       if(iter > 5) break;
     }
 
-    return { properties, offset };
+    return properties;
   }
 
-  getProperty(buffer: Buffer, offset: number) {
-      const keyString = readString(buffer, offset);
-      offset += keyString.length;
-      const keyType = readString(buffer, offset);
-      offset += keyType.length + 8; // skip property_value_size
+  getProperty(reader: BufferReaderType): Object {
+      const keyString = nextString(reader);
+      const keyType = nextString(reader);
+      const propertyValueSize = reader.nextUInt32LE();
+      reader.nextUInt32LE();
 
       let keyValue;
-      switch(keyType.value) {
+      switch(keyType) {
         case 'IntProperty':
-          keyValue = buffer.readUIntLE(offset);
-          offset += 4;
+          keyValue = reader.nextUInt32LE();
           break;
         case 'ArrayProperty':
-          const arrProp = this.getProperties(buffer, offset + 4);
-          keyValue = arrProp.properties;
-          offset = arrProp.offset;
+          const arrLength = reader.nextUInt32LE();
+          keyValue = [];
+          for(let i = 0; i < arrLength; i++) {
+            keyValue.push(this.getProperties(reader));
+          }
+          break;
         case 'StrProperty':
-          const strProp = readString(buffer, offset);
-          keyValue = strProp.value;
-          offset += strProp.length;
+          keyValue = nextString(reader);
           break;
         default:
-          console.warn(`${keyType.value} not supported.`);
+          throw new Error(`${keyType} not supported.`);
       }
 
       return {
-        key: keyString.value,
-        type: keyType.value,
-        value: keyValue,
-        offset
+        key: keyString,
+        type: keyType,
+        value: keyValue
       }
   }
 
   parseHeader(buffer: Buffer): ReplayHeaderType {
     const headerSize = buffer.readUInt32LE(0);
-    const headerRaw = buffer.slice(16, 16 + (headerSize - 8) * 8);
+    const headerReader = new BufferReader(buffer.slice(16, 16 + (headerSize - 8) * 8));
 
-    let offset = readString(headerRaw, 0).length;
-    return this.getProperties(headerRaw, offset);
+    nextString(headerReader);
+    return this.getProperties(headerReader);
   }
 }
 
