@@ -14,6 +14,7 @@ type ReplayType = {
 type BufferReaderType = {
   seek: (position: number) => void;
   nextString: () => string;
+  nextUInt8: () => number;
   nextUInt16LE: () => number;
   nextUInt32LE: () => number;
   nextUInt32BE: () => number;
@@ -22,7 +23,7 @@ type BufferReaderType = {
 function nextString(reader: BufferReaderType): string {
   const strLen = reader.nextUInt32LE();
   const str = reader.nextString(strLen);
-  return str.substr(0, strLen-1);
+  return str.substr(0, strLen - 1); // exclude null terminator
 }
 
 class Parser {
@@ -47,7 +48,10 @@ class Parser {
     let iter = 0;
     while(true) {
       const property = this.getProperty(buffer);
-      properties[property.key] = property.value;
+      if(!property)
+        break;
+
+      properties[property.name] = property.value;
 
       iter++;
       if(iter > 5) break;
@@ -58,12 +62,19 @@ class Parser {
 
   getProperty(reader: BufferReaderType): Object {
       const keyString = nextString(reader);
+      if(keyString === 'None') {
+        return null;
+      }
+
       const keyType = nextString(reader);
       const propertyValueSize = reader.nextUInt32LE();
       reader.nextUInt32LE();
 
       let keyValue;
       switch(keyType) {
+        case 'BoolProperty':
+          keyValue = reader.nextUInt8() === 1;
+          break;
         case 'IntProperty':
           keyValue = reader.nextUInt32LE();
           break;
@@ -74,16 +85,24 @@ class Parser {
             keyValue.push(this.getProperties(reader));
           }
           break;
+        case 'NameProperty':
         case 'StrProperty':
           keyValue = nextString(reader);
+          break;
+        case 'ByteProperty':
+          keyValue = {
+            [nextString(reader)]: nextString(reader)
+          };
+          break;
+        case 'QWordProperty':
+          keyValue = { high: reader.nextUInt32LE(), low: reader.nextUInt32LE() };
           break;
         default:
           throw new Error(`${keyType} not supported.`);
       }
 
       return {
-        key: keyString,
-        type: keyType,
+        name: keyString,
         value: keyValue
       }
   }
