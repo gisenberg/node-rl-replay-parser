@@ -39,6 +39,7 @@ class Parser {
       Header: this.parseHeader(buffer),
     }
 
+    console.log(JSON.stringify(replay.Header, null, 2));
     return replay;
   }
 

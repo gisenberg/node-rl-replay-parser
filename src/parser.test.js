@@ -15,7 +15,7 @@ describe('parser', () => {
   describe('parseHeader', () => {
     it('should parse the header', () => {
       const parser = new Parser();
-      const replayHeader = parser.parseHeader(replayFile);
+      const replayHeader = parser.parse(replayFile).Header;
 
       expect(replayHeader).to.eql(replaySnapshot.Header);
     });
