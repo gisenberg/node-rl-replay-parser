@@ -1,20 +1,31 @@
-require('mocha');
+import fs from 'fs'
+import path from 'path';
+import Parser from './parser';
 import { expect } from 'chai';
 
-const fs = require('fs');
-const path = require('path');
-
-const Parser = require('./parser');
-
 describe('parser', () => {
-  describe('header', () => {
-    it('should parse the header', () => {
-      const parser = new Parser();
-      const replaySnapshot = fs.readFileSync(path.join(__dirname, './snapshots/1.replay'));
-      const replayHeader = parser.parseHeader(replaySnapshot);
+  let replaySnapshot;
 
-      expect(replayHeader.CRC).to.eql('59f93396');
-      expect(replayHeader.Version).to.eql('868.17');
+  beforeEach(() => {
+    replaySnapshot = fs.readFileSync(path.join(__dirname, './snapshots/1.replay'));
+  });
+
+  describe('parseHeader', () => {
+    it('should parse the header', () => {
+      // const parser = new Parser();
+      // const replayHeader = parser.parseHeader(replaySnapshot);
+      //
+      // expect(true).to.eql(false);
     });
+  });
+
+  describe('parse', () => {
+      it('should parse the CRC and version number', () => {
+        const parser = new Parser();
+        const replay = parser.parse(replaySnapshot);
+
+        expect(replay.CRC).to.eql('59f93396');
+        expect(replay.Version).to.eql('868.17');
+      });
   });
 });
