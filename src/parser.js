@@ -9,6 +9,12 @@ type ReplayType = {
   Header: ReplayHeaderType
 }
 
+function readString(buffer: Buffer, strOffset: number) {
+  const strLen = buffer.readUInt32LE(strOffset);
+  const str = buffer.toString('utf-8', strOffset+4, strOffset+4 + strLen - 1);
+  return { value: str, length: strLen + 4 };
+}
+
 class Parser {
   parse(buffer: Buffer): ReplayType {
     const replay = {
@@ -20,42 +26,61 @@ class Parser {
     return replay;
   }
 
-  parseHeader(buffer: Buffer): ReplayHeaderType {
-    function readString(buffer: Buffer, strOffset: number) {
-      const strLen = buffer.readUInt32LE(strOffset);
-      const str = buffer.toString('utf-8', strOffset+4, strOffset+4 + strLen - 1);
-      return { value: str, length: strLen + 4 };
-    }
-
-    const header = {};
-
-    const headerSize = buffer.readUInt32LE(0);
-    const headerRaw = buffer.slice(16, 16 + (headerSize - 8) * 8);
-
-    let offset = readString(headerRaw, 0).length;
+  getProperties(buffer: Buffer, startOffset: number = 0) {
+    const properties = {};
+    let offset = startOffset;
 
     let iter = 0;
     while(true) {
-      const keyString = readString(headerRaw, offset);
+      const property = this.getProperty(buffer, offset);
+      properties[property.key] = property.value;
+      offset = property.offset;
+      iter++;
+      if(iter > 5) break;
+    }
+
+    return { properties, offset };
+  }
+
+  getProperty(buffer: Buffer, offset: number) {
+      const keyString = readString(buffer, offset);
       offset += keyString.length;
-      const keyType = readString(headerRaw, offset);
+      const keyType = readString(buffer, offset);
       offset += keyType.length + 8; // skip property_value_size
 
       let keyValue;
       switch(keyType.value) {
         case 'IntProperty':
-          keyValue = headerRaw.readUIntLE(offset);
-          offset += 8;
+          keyValue = buffer.readUIntLE(offset);
+          offset += 4;
           break;
+        case 'ArrayProperty':
+          const arrProp = this.getProperties(buffer, offset + 4);
+          keyValue = arrProp.properties;
+          offset = arrProp.offset;
+        case 'StrProperty':
+          const strProp = readString(buffer, offset);
+          keyValue = strProp.value;
+          offset += strProp.length;
+          break;
+        default:
+          console.warn(`${keyType.value} not supported.`);
       }
 
-      header[keyString.value] = keyValue;
-      iter++;
-      if(iter > 0) break;
-    }
+      return {
+        key: keyString.value,
+        type: keyType.value,
+        value: keyValue,
+        offset
+      }
+  }
 
+  parseHeader(buffer: Buffer): ReplayHeaderType {
+    const headerSize = buffer.readUInt32LE(0);
+    const headerRaw = buffer.slice(16, 16 + (headerSize - 8) * 8);
 
-    return header;
+    let offset = readString(headerRaw, 0).length;
+    return this.getProperties(headerRaw, offset);
   }
 }
 
