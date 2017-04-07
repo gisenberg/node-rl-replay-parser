@@ -41,15 +41,36 @@ class Parser {
     const maps = this.decodeMaps(reader);
     const keyFrames = this.decodeKeyFrames(reader);
 
+    const netstreamLength = reader.nextUInt32LE();
+    reader.nextBuffer(netstreamLength);
+
+    const debugLog = this.decodeDebugLog(reader);
+
     const replay = {
       CRC: crc,
       Version: `${majorVersion}.${minorVersion}`,
       Header: header,
       Maps: maps,
       KeyFrames: keyFrames,
+      'Debug Log': debugLog
     }
 
     return replay;
+  }
+
+  decodeDebugLog(reader: BufferReaderType): Array<string> {
+    const debugLog = [];
+
+    const arrLen = reader.nextUInt32LE();
+    for(let i = 0; i < arrLen; i++) {
+      debugLog.push({
+        frame: reader.nextUInt32LE(),
+        player: nextString(reader),
+        data: nextString(reader)
+      });
+    }
+
+    return debugLog;
   }
 
   decodeMaps(reader: BufferReaderType): Array<string> {

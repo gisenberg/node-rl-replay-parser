@@ -41,5 +41,12 @@ describe('parser', () => {
 
       expect(KeyFrames).to.eql(replaySnapshot.KeyFrames);
     });
+
+    it('should parse debug log', () => {
+      const parser = new Parser();
+      const DebugLog = parser.parse(replayFile)['Debug Log'];
+
+      expect(DebugLog).to.eql(replaySnapshot['Debug Log']);
+    });
   });
 });
