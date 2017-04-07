@@ -57,8 +57,9 @@ class Parser {
 
     const debugLog = this.decodeDebugLog(reader);
     const goalFrames = this.decodeGoalFrames(reader);
-    const packages = this.decodePackages(reader);
-    const objects = this.decodeObjects(reader);
+    const packages = this.decodeStringArray(reader);
+    const objects = this.decodeStringArray(reader);
+    const names = this.decodeStringArray(reader);
 
     const replay = {
       CRC: crc,
@@ -69,10 +70,22 @@ class Parser {
       DebugLog: debugLog,
       GoalFrames: goalFrames,
       Packages: packages,
-      Objects: objects
+      Objects: objects,
+      Names: names,
     }
 
     return replay;
+  }
+
+  decodeStringArray(reader: BufferReaderType): Array<string> {
+    const strings = [];
+
+    const arrLen = reader.nextUInt32LE();
+    for(let i = 0; i < arrLen; i++) {
+      strings.push(nextString(reader));
+    }
+
+    return strings;
   }
 
   decodeDebugLog(reader: BufferReaderType): Array<DebugLogEntryType> {
@@ -88,28 +101,6 @@ class Parser {
     }
 
     return debugLog;
-  }
-
-  decodeObjects(reader: BufferReaderType): Array<string> {
-    const objects = [];
-
-    const arrLen = reader.nextUInt32LE();
-    for(let i = 0; i < arrLen; i++) {
-      objects.push(nextString(reader));
-    }
-
-    return objects;
-  }
-
-  decodePackages(reader: BufferReaderType): Array<string> {
-    const packages = [];
-
-    const arrLen = reader.nextUInt32LE();
-    for(let i = 0; i < arrLen; i++) {
-      packages.push(nextString(reader));
-    }
-
-    return packages;
   }
 
   decodeGoalFrames(reader: BufferReaderType): Array<GoalFrameType> {

@@ -69,5 +69,12 @@ describe('parser', () => {
 
       expect(Objects).to.eql(replaySnapshot.Objects);
     });
+
+    it('should parse names', () => {
+      const parser = new Parser();
+      const { Names } = parser.parse(replayFile);
+
+      expect(Names).to.eql(replaySnapshot.Names);
+    });
   });
 });
