@@ -55,5 +55,12 @@ describe('parser', () => {
 
       expect(GoalFrames).to.eql(replaySnapshot.GoalFrames);
     });
+
+    it('should parse goal frames', () => {
+      const parser = new Parser();
+      const { Packages } = parser.parse(replayFile);
+
+      expect(Packages).to.eql(replaySnapshot.Packages);
+    });
   });
 });

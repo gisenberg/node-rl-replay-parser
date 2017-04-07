@@ -57,6 +57,7 @@ class Parser {
 
     const debugLog = this.decodeDebugLog(reader);
     const goalFrames = this.decodeGoalFrames(reader);
+    const packages = this.decodePackages(reader);
 
     const replay = {
       CRC: crc,
@@ -66,6 +67,7 @@ class Parser {
       KeyFrames: keyFrames,
       DebugLog: debugLog,
       GoalFrames: goalFrames,
+      Packages: packages
     }
 
     return replay;
@@ -84,6 +86,17 @@ class Parser {
     }
 
     return debugLog;
+  }
+
+  decodePackages(reader: BufferReaderType): Array<string> {
+    const packages = [];
+
+    const arrLen = reader.nextUInt32LE();
+    for(let i = 0; i < arrLen; i++) {
+      packages.push(nextString(reader));
+    }
+
+    return packages;
   }
 
   decodeGoalFrames(reader: BufferReaderType): Array<GoalFrameType> {
