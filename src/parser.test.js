@@ -12,22 +12,27 @@ describe('parser', () => {
     replaySnapshot = require('./snapshots/1.js');
   });
 
-  describe('parseHeader', () => {
+  describe('parse', () => {
+    it('should parse the CRC and version number', () => {
+      const parser = new Parser();
+      const replay = parser.parse(replayFile);
+
+      expect(replay.CRC).to.eql(replaySnapshot.CRC);
+      expect(replay.Version).to.eql(replaySnapshot.Version);
+    });
+
     it('should parse the header', () => {
       const parser = new Parser();
       const replayHeader = parser.parse(replayFile).Header;
 
       expect(replayHeader).to.eql(replaySnapshot.Header);
     });
-  });
 
-  describe('parse', () => {
-      it('should parse the CRC and version number', () => {
-        const parser = new Parser();
-        const replay = parser.parse(replayFile);
+    it('should parse maps', () => {
+      const parser = new Parser();
+      const maps = parser.parse(replayFile).Maps;
 
-        expect(replay.CRC).to.eql(replaySnapshot.CRC);
-        expect(replay.Version).to.eql(replaySnapshot.Version);
-      });
+      expect(maps).to.eql(replaySnapshot.Maps);
+    });
   });
 });

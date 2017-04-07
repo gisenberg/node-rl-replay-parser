@@ -35,20 +35,37 @@ class Parser {
     const crc = reader.nextUInt32BE().toString(16);
     const majorVersion = reader.nextUInt32LE();
     const minorVersion = reader.nextUInt32LE();
+    const header = this.parseHeader(reader, headerLength);
+    reader.nextUInt32LE();
+    reader.nextUInt32LE();
+    const maps = this.parseMaps(reader);
+
     const replay = {
       CRC: crc,
       Version: `${majorVersion}.${minorVersion}`,
-      Header: this.parseHeader(buffer),
+      Header: header,
+      Maps: maps,
     }
 
     return replay;
   }
 
-  getProperties(buffer: BufferReaderType) {
+  parseMaps(reader: BufferReaderType): Array<string> {
+    const maps = [];
+
+    const arrLen = reader.nextUInt32LE();
+    for(let i = 0; i < arrLen; i++) {
+      maps.push(nextString(reader));
+    }
+
+    return maps;
+  }
+
+  getProperties(reader: BufferReaderType) {
     const properties = {};
 
     while(true) {
-      const property = this.getProperty(buffer);
+      const property = this.getProperty(reader);
       if(!property)
         break;
 
@@ -110,12 +127,9 @@ class Parser {
       }
   }
 
-  parseHeader(buffer: Buffer): ReplayHeaderType {
-    const headerSize = buffer.readUInt32LE(0);
-    const headerReader = new BufferReader(buffer.slice(16, 16 + (headerSize - 8) * 8));
-
-    nextString(headerReader);
-    return this.getProperties(headerReader);
+  parseHeader(reader: BufferReader, headerLength: number): ReplayHeaderType {
+    nextString(reader);
+    return this.getProperties(reader);
   }
 }
 
