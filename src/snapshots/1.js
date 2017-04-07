@@ -1022,11 +1022,11 @@ module.exports = {
     "297": "TAGame.VehiclePickup_TA",
     "298": "TAGame.VehiclePickup_Boost_TA"
   },
-  "Netcache Tree": {
+  "NetCache": {
     "Core.Object": {
       "mapping": {},
       "parent": 0,
-      "cache_id": 0,
+      "cacheId": 0,
       "Engine.Actor": {
         "mapping": {
           "0": 1,
@@ -1052,26 +1052,26 @@ module.exports = {
           "20": 21
         },
         "parent": 0,
-        "cache_id": 21,
+        "cacheId": 21,
         "Engine.Info": {
           "mapping": {},
           "parent": 21,
-          "cache_id": 21,
+          "cacheId": 21,
           "Engine.ReplicationInfo": {
             "mapping": {},
             "parent": 21,
-            "cache_id": 21,
+            "cacheId": 21,
             "TAGame.VehiclePickup_TA": {
               "mapping": {
                 "21": 295,
                 "22": 296
               },
               "parent": 21,
-              "cache_id": 23,
+              "cacheId": 23,
               "TAGame.VehiclePickup_Boost_TA": {
                 "mapping": {},
                 "parent": 23,
-                "cache_id": 23
+                "cacheId": 23
               }
             },
             "TAGame.CrowdManager_TA": {
@@ -1080,7 +1080,7 @@ module.exports = {
                 "22": 288
               },
               "parent": 21,
-              "cache_id": 23
+              "cacheId": 23
             },
             "TAGame.CrowdActor_TA": {
               "mapping": {
@@ -1091,7 +1091,7 @@ module.exports = {
                 "25": 284
               },
               "parent": 21,
-              "cache_id": 26
+              "cacheId": 26
             },
             "Engine.TeamInfo": {
               "mapping": {
@@ -1100,7 +1100,7 @@ module.exports = {
                 "23": 269
               },
               "parent": 21,
-              "cache_id": 24,
+              "cacheId": 24,
               "TAGame.Team_TA": {
                 "mapping": {
                   "24": 271,
@@ -1109,13 +1109,13 @@ module.exports = {
                   "27": 274
                 },
                 "parent": 24,
-                "cache_id": 28,
+                "cacheId": 28,
                 "TAGame.Team_Soccar_TA": {
                   "mapping": {
                     "28": 276
                   },
                   "parent": 28,
-                  "cache_id": 29
+                  "cacheId": 29
                 }
               }
             },
@@ -1134,7 +1134,7 @@ module.exports = {
                 "31": 256
               },
               "parent": 21,
-              "cache_id": 32,
+              "cacheId": 32,
               "ProjectX.GRI_X": {
                 "mapping": {
                   "32": 258,
@@ -1144,13 +1144,13 @@ module.exports = {
                   "36": 262
                 },
                 "parent": 32,
-                "cache_id": 37,
+                "cacheId": 37,
                 "TAGame.GRI_TA": {
                   "mapping": {
                     "37": 264
                   },
                   "parent": 37,
-                  "cache_id": 38
+                  "cacheId": 38
                 }
               }
             },
@@ -1169,7 +1169,7 @@ module.exports = {
                 "31": 192
               },
               "parent": 21,
-              "cache_id": 32,
+              "cacheId": 32,
               "TAGame.GameEvent_Team_TA": {
                 "mapping": {
                   "32": 194,
@@ -1177,7 +1177,7 @@ module.exports = {
                   "34": 196
                 },
                 "parent": 32,
-                "cache_id": 35,
+                "cacheId": 35,
                 "TAGame.GameEvent_Soccar_TA": {
                   "mapping": {
                     "35": 198,
@@ -1196,7 +1196,7 @@ module.exports = {
                     "48": 211
                   },
                   "parent": 35,
-                  "cache_id": 49
+                  "cacheId": 49
                 }
               }
             },
@@ -1207,15 +1207,15 @@ module.exports = {
                 "23": 169
               },
               "parent": 21,
-              "cache_id": 24,
+              "cacheId": 24,
               "TAGame.CarComponent_Jump_TA": {
                 "mapping": {},
                 "parent": 24,
-                "cache_id": 24,
+                "cacheId": 24,
                 "TAGame.CarComponent_DoubleJump_TA": {
                   "mapping": {},
                   "parent": 24,
-                  "cache_id": 24,
+                  "cacheId": 24,
                   "TAGame.CarComponent_Boost_TA": {
                     "mapping": {
                       "24": 214,
@@ -1231,7 +1231,7 @@ module.exports = {
                       "34": 224
                     },
                     "parent": 24,
-                    "cache_id": 32
+                    "cacheId": 32
                   },
                   "TAGame.CarComponent_FlipCar_TA": {
                     "mapping": {
@@ -1239,14 +1239,14 @@ module.exports = {
                       "25": 179
                     },
                     "parent": 24,
-                    "cache_id": 26
+                    "cacheId": 26
                   },
                   "TAGame.CarComponent_Dodge_TA": {
                     "mapping": {
                       "24": 175
                     },
                     "parent": 24,
-                    "cache_id": 25
+                    "cacheId": 25
                   }
                 }
               }
@@ -1268,7 +1268,7 @@ module.exports = {
                 "33": 164
               },
               "parent": 21,
-              "cache_id": 28
+              "cacheId": 28
             },
             "Engine.PlayerReplicationInfo": {
               "mapping": {
@@ -1293,11 +1293,11 @@ module.exports = {
                 "39": 95
               },
               "parent": 21,
-              "cache_id": 38,
+              "cacheId": 38,
               "ProjectX.PRI_X": {
                 "mapping": {},
                 "parent": 40,
-                "cache_id": 38,
+                "cacheId": 38,
                 "TAGame.PRI_TA": {
                   "mapping": {
                     "40": 98,
@@ -1354,7 +1354,7 @@ module.exports = {
                     "91": 149
                   },
                   "parent": 40,
-                  "cache_id": 69
+                  "cacheId": 69
                 }
               }
             }
@@ -1393,11 +1393,11 @@ module.exports = {
             "49": 51
           },
           "parent": 21,
-          "cache_id": 50,
+          "cacheId": 50,
           "ProjectX.Pawn_X": {
             "mapping": {},
             "parent": 50,
-            "cache_id": 50,
+            "cacheId": 50,
             "TAGame.RBActor_TA": {
               "mapping": {
                 "50": 54,
@@ -1407,7 +1407,7 @@ module.exports = {
                 "54": 58
               },
               "parent": 50,
-              "cache_id": 55,
+              "cacheId": 55,
               "TAGame.Vehicle_TA": {
                 "mapping": {
                   "55": 227,
@@ -1417,7 +1417,7 @@ module.exports = {
                   "59": 231
                 },
                 "parent": 55,
-                "cache_id": 60,
+                "cacheId": 60,
                 "TAGame.Car_TA": {
                   "mapping": {
                     "60": 233,
@@ -1433,7 +1433,7 @@ module.exports = {
                     "70": 243
                   },
                   "parent": 60,
-                  "cache_id": 70
+                  "cacheId": 70
                 }
               },
               "TAGame.Ball_TA": {
@@ -1453,7 +1453,7 @@ module.exports = {
                   "67": 72
                 },
                 "parent": 55,
-                "cache_id": 68
+                "cacheId": 68
               }
             }
           }

@@ -83,5 +83,12 @@ describe('parser', () => {
 
       expect(ClassMap).to.eql(replaySnapshot.ClassMap);
     });
+
+    it('should parse net cache', () => {
+      const parser = new Parser();
+      const { NetCache } = parser.parse(replayFile);
+
+      expect(NetCache).to.eql(replaySnapshot.NetCache);
+    });
   });
 });

@@ -61,6 +61,7 @@ class Parser {
     const objects = this.decodeStringArray(reader);
     const names = this.decodeStringArray(reader);
     const classMap = this.decodeClassIndexMap(reader);
+    const netCache = this.decodeClassNetCache(reader, classMap);
 
     const replay = {
       CRC: crc,
@@ -73,7 +74,8 @@ class Parser {
       Packages: packages,
       Objects: objects,
       Names: names,
-      ClassMap: classMap
+      ClassMap: classMap,
+      NetCache: netCache
     }
 
     return replay;
@@ -90,6 +92,59 @@ class Parser {
     }
 
     return classIndexMap;
+  }
+
+  decodeClassNetCache(reader: BufferReaderType, classMap: Object) {
+    const cacheList = [];
+
+    const entryNumber = reader.nextUInt32LE();
+    for(let i = 0; i < entryNumber; i++) {
+      const classId = reader.nextUInt32LE();
+      const parent = reader.nextUInt32LE();
+      const cacheId = reader.nextUInt32LE();
+      const length = reader.nextUInt32LE();
+      const mapping = {};
+
+      for(let j = 0; j < length; j++) {
+        const propertyIndex = reader.nextUInt32LE();
+        const propertyMappedIndex = reader.nextUInt32LE();
+        mapping[propertyMappedIndex] = propertyIndex;
+      }
+
+      const data = {
+        mapping,
+        parent,
+        cacheId
+      }
+
+      cacheList.push({[classMap[classId]]: data});
+    }
+
+    cacheList.reverse(); // Build netcache tree by "furling" our netcaches from behind
+
+    for(let i = 0; i < cacheList.length - 1; i++) {
+      const item = cacheList[i];
+      let nextCacheIndex = i + 1;
+      let parent = item[Object.keys(item)[0]].parent;
+      while(true) {
+        if(nextCacheIndex === cacheList.length) { // Hit root without finding parent
+          parent -= 1; // Try one ID lower for the parent
+          nextCacheIndex = i + 1; //r reset search to first item
+          continue;
+        }
+
+        let nextItem = cacheList[nextCacheIndex];
+        nextItem = nextItem[Object.keys(nextItem)[0]];
+        if(nextItem.cacheId === parent) {
+          nextItem = Object.assign(nextItem, item);
+          break;
+        } else {
+          nextCacheIndex += 1;
+        }
+      }
+    }
+
+    return cacheList[cacheList.length - 1];
   }
 
   decodeStringArray(reader: BufferReaderType): Array<string> {
