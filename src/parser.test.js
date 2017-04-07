@@ -44,9 +44,16 @@ describe('parser', () => {
 
     it('should parse debug log', () => {
       const parser = new Parser();
-      const DebugLog = parser.parse(replayFile)['Debug Log'];
+      const { DebugLog } = parser.parse(replayFile);
 
-      expect(DebugLog).to.eql(replaySnapshot['Debug Log']);
+      expect(DebugLog).to.eql(replaySnapshot.DebugLog);
+    });
+
+    it('should parse goal frames', () => {
+      const parser = new Parser();
+      const { GoalFrames } = parser.parse(replayFile);
+
+      expect(GoalFrames).to.eql(replaySnapshot.GoalFrames);
     });
   });
 });

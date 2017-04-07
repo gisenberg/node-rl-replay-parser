@@ -22,6 +22,17 @@ type BufferReaderType = {
   nextUInt32BE: () => number;
 }
 
+type DebugLogEntryType = {
+  frame: number;
+  player: string;
+  data: string;
+}
+
+type GoalFrameType = {
+  type: string;
+  frame: number;
+}
+
 function nextString(reader: BufferReaderType): string {
   const strLen = reader.nextUInt32LE();
   const str = reader.nextString(strLen);
@@ -45,6 +56,7 @@ class Parser {
     reader.nextBuffer(netstreamLength);
 
     const debugLog = this.decodeDebugLog(reader);
+    const goalFrames = this.decodeGoalFrames(reader);
 
     const replay = {
       CRC: crc,
@@ -52,13 +64,14 @@ class Parser {
       Header: header,
       Maps: maps,
       KeyFrames: keyFrames,
-      'Debug Log': debugLog
+      DebugLog: debugLog,
+      GoalFrames: goalFrames,
     }
 
     return replay;
   }
 
-  decodeDebugLog(reader: BufferReaderType): Array<string> {
+  decodeDebugLog(reader: BufferReaderType): Array<DebugLogEntryType> {
     const debugLog = [];
 
     const arrLen = reader.nextUInt32LE();
@@ -71,6 +84,20 @@ class Parser {
     }
 
     return debugLog;
+  }
+
+  decodeGoalFrames(reader: BufferReaderType): Array<GoalFrameType> {
+    const goalFrames = [];
+
+    const arrLen = reader.nextUInt32LE();
+    for(let i = 0; i < arrLen; i++) {
+      goalFrames.push({
+        type: nextString(reader),
+        frame: reader.nextUInt32LE()
+      });
+    }
+
+    return goalFrames;
   }
 
   decodeMaps(reader: BufferReaderType): Array<string> {

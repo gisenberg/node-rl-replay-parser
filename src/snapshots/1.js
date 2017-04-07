@@ -384,8 +384,8 @@ module.exports = {
       "position": 8397192
     }
   ],
-  "Debug Log": [],
-  "Goal Frames": [
+  "DebugLog": [],
+  "GoalFrames": [
     {
       "type": "Team1Goal",
       "frame": 797
