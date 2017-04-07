@@ -76,5 +76,12 @@ describe('parser', () => {
 
       expect(Names).to.eql(replaySnapshot.Names);
     });
+
+    it('should parse class map', () => {
+      const parser = new Parser();
+      const { ClassMap } = parser.parse(replayFile);
+
+      expect(ClassMap).to.eql(replaySnapshot.ClassMap);
+    });
   });
 });

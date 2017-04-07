@@ -60,6 +60,7 @@ class Parser {
     const packages = this.decodeStringArray(reader);
     const objects = this.decodeStringArray(reader);
     const names = this.decodeStringArray(reader);
+    const classMap = this.decodeClassIndexMap(reader);
 
     const replay = {
       CRC: crc,
@@ -72,9 +73,23 @@ class Parser {
       Packages: packages,
       Objects: objects,
       Names: names,
+      ClassMap: classMap
     }
 
     return replay;
+  }
+
+  decodeClassIndexMap(reader: BufferReaderType): Object {
+    const classIndexMap = {};
+
+    const arrLen = reader.nextUInt32LE();
+    for(let i = 0; i < arrLen; i++) {
+      const name = nextString(reader);
+      const classId = reader.nextUInt32LE();
+      classIndexMap[classId] = name;
+    }
+
+    return classIndexMap;
   }
 
   decodeStringArray(reader: BufferReaderType): Array<string> {

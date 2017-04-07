@@ -984,7 +984,7 @@ module.exports = {
     "CarComponent_Boost_TA_926",
     "Car_TA_926"
   ],
-  "Class Map": {
+  "ClassMap": {
     "0": "Core.Object",
     "22": "Engine.Actor",
     "52": "Engine.Pawn",
