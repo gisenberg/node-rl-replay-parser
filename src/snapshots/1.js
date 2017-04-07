@@ -65,7 +65,7 @@ module.exports = {
         "Platform": {
           "OnlinePlatform": "OnlinePlatform_Steam"
         },
-        "OnlineID": 15119960541952479233,
+        "OnlineID": "15119960541952479233",
         "Team": 0,
         "Score": 820,
         "Goals": 1,
@@ -79,7 +79,7 @@ module.exports = {
         "Platform": {
           "OnlinePlatform": "OnlinePlatform_Steam"
         },
-        "OnlineID": 16209148889415028737,
+        "OnlineID": "16209148889415028737",
         "Team": 1,
         "Score": 480,
         "Goals": 1,
@@ -93,7 +93,7 @@ module.exports = {
         "Platform": {
           "OnlinePlatform": "OnlinePlatform_Steam"
         },
-        "OnlineID": 15726375336776044545,
+        "OnlineID": "15726375336776044545",
         "Team": 1,
         "Score": 630,
         "Goals": 1,
@@ -107,7 +107,7 @@ module.exports = {
         "Platform": {
           "OnlinePlatform": "OnlinePlatform_Steam"
         },
-        "OnlineID": 12741008839944441857,
+        "OnlineID": "12741008839944441857",
         "Team": 0,
         "Score": 670,
         "Goals": 2,

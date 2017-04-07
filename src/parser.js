@@ -1,6 +1,7 @@
 // @flow
 
 import BufferReader from 'buffer-reader';
+import { UINT64 } from 'cuint';
 
 type ReplayHeaderType = {
 }
@@ -14,6 +15,7 @@ type ReplayType = {
 type BufferReaderType = {
   seek: (position: number) => void;
   nextString: () => string;
+  nextFloatLE: () => number;
   nextUInt8: () => number;
   nextUInt16LE: () => number;
   nextUInt32LE: () => number;
@@ -39,23 +41,18 @@ class Parser {
       Header: this.parseHeader(buffer),
     }
 
-    console.log(JSON.stringify(replay.Header, null, 2));
     return replay;
   }
 
   getProperties(buffer: BufferReaderType) {
     const properties = {};
 
-    let iter = 0;
     while(true) {
       const property = this.getProperty(buffer);
       if(!property)
         break;
 
       properties[property.name] = property.value;
-
-      iter++;
-      if(iter > 5) break;
     }
 
     return properties;
@@ -86,6 +83,9 @@ class Parser {
             keyValue.push(this.getProperties(reader));
           }
           break;
+        case 'FloatProperty':
+          keyValue = reader.nextFloatLE();
+          break;
         case 'NameProperty':
         case 'StrProperty':
           keyValue = nextString(reader);
@@ -96,7 +96,9 @@ class Parser {
           };
           break;
         case 'QWordProperty':
-          keyValue = { high: reader.nextUInt32LE(), low: reader.nextUInt32LE() };
+          const high = reader.nextUInt32BE();
+          const low = reader.nextUInt32BE();
+          keyValue = UINT64(low, high).toString();
           break;
         default:
           throw new Error(`${keyType} not supported.`);
