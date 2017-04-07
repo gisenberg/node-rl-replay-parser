@@ -23,16 +23,23 @@ describe('parser', () => {
 
     it('should parse the header', () => {
       const parser = new Parser();
-      const replayHeader = parser.parse(replayFile).Header;
+      const { Header } = parser.parse(replayFile);
 
-      expect(replayHeader).to.eql(replaySnapshot.Header);
+      expect(Header).to.eql(replaySnapshot.Header);
     });
 
     it('should parse maps', () => {
       const parser = new Parser();
-      const maps = parser.parse(replayFile).Maps;
+      const { Maps } = parser.parse(replayFile);
 
-      expect(maps).to.eql(replaySnapshot.Maps);
+      expect(Maps).to.eql(replaySnapshot.Maps);
+    });
+
+    it('should parse keyframes', () => {
+      const parser = new Parser();
+      const { KeyFrames } = parser.parse(replayFile);
+
+      expect(KeyFrames).to.eql(replaySnapshot.KeyFrames);
     });
   });
 });

@@ -35,22 +35,24 @@ class Parser {
     const crc = reader.nextUInt32BE().toString(16);
     const majorVersion = reader.nextUInt32LE();
     const minorVersion = reader.nextUInt32LE();
-    const header = this.parseHeader(reader, headerLength);
+    const header = this.decodeHeader(reader, headerLength);
     reader.nextUInt32LE();
     reader.nextUInt32LE();
-    const maps = this.parseMaps(reader);
+    const maps = this.decodeMaps(reader);
+    const keyFrames = this.decodeKeyFrames(reader);
 
     const replay = {
       CRC: crc,
       Version: `${majorVersion}.${minorVersion}`,
       Header: header,
       Maps: maps,
+      KeyFrames: keyFrames,
     }
 
     return replay;
   }
 
-  parseMaps(reader: BufferReaderType): Array<string> {
+  decodeMaps(reader: BufferReaderType): Array<string> {
     const maps = [];
 
     const arrLen = reader.nextUInt32LE();
@@ -59,6 +61,20 @@ class Parser {
     }
 
     return maps;
+  }
+
+  decodeKeyFrames(reader: BufferReaderType) {
+    const keyFrameLength = reader.nextUInt32LE();
+    const keyFrames = [];
+    for(let i = 0; i < keyFrameLength; i++) {
+      keyFrames.push({
+        time: reader.nextFloatLE(),
+        frame: reader.nextUInt32LE(),
+        position: reader.nextUInt32LE()
+      });
+    }
+
+    return keyFrames;
   }
 
   getProperties(reader: BufferReaderType) {
@@ -127,7 +143,7 @@ class Parser {
       }
   }
 
-  parseHeader(reader: BufferReader, headerLength: number): ReplayHeaderType {
+  decodeHeader(reader: BufferReader, headerLength: number): ReplayHeaderType {
     nextString(reader);
     return this.getProperties(reader);
   }
