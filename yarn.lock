@@ -640,7 +640,7 @@ browserslist@^1.4.0:
 
 buffer-reader@^0.1.0:
   version "0.1.0"
-  resolved "https://artifactory.secureserver.net/artifactory/api/npm/node-virt/buffer-reader/-/buffer-reader-0.1.0.tgz#62953f955bbc50d8aa8e875f9789326a3b0c7644"
+  resolved "https://registry.yarnpkg.com/buffer-reader/-/buffer-reader-0.1.0.tgz#62953f955bbc50d8aa8e875f9789326a3b0c7644"
 
 buffer-shims@^1.0.0:
   version "1.0.0"
