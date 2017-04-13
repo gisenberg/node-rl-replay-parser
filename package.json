@@ -1,6 +1,6 @@
 {
   "name": "rl-replay-parser",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "./lib/parser.js",
   "scripts": {
     "build": "babel -d lib src --ignore *.test.js",
