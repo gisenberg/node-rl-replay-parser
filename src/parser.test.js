@@ -88,7 +88,10 @@ describe('parser', () => {
     });
 
     it('should parse frames', () => {
+      const parser = new Parser();
+      const { Frames } = parser.parse(replayFile);
 
+      expect(Frames).to.eql(framesSnapshot.Frames);
     });
   });
 });
