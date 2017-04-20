@@ -4,13 +4,9 @@ import Parser from './parser';
 import { expect } from 'chai';
 
 describe('parser', () => {
-  let replayFile;
-  let replaySnapshot;
-
-  beforeEach(() => {
-    replayFile = fs.readFileSync(path.join(__dirname, './snapshots/1.replay'));
-    replaySnapshot = require('./snapshots/1.js');
-  });
+  let replayFile = fs.readFileSync(path.join(__dirname, './snapshots/1.replay'));
+  let replaySnapshot = JSON.parse(fs.readFileSync(path.join(__dirname, './snapshots/1.json')));
+  let framesSnapshot = JSON.parse(fs.readFileSync(path.join(__dirname, './snapshots/1.frames.json')));
 
   describe('parse', () => {
     it('should parse the CRC and version number', () => {
@@ -89,6 +85,10 @@ describe('parser', () => {
       const { NetCache } = parser.parse(replayFile);
 
       expect(NetCache).to.eql(replaySnapshot.NetCache);
+    });
+
+    it('should parse frames', () => {
+
     });
   });
 });
